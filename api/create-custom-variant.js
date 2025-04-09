@@ -35,12 +35,10 @@ module.exports = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized. Please authenticate first.' });
     }
     
-    // Create a Shopify REST client
-    const client = shopify.clients.rest({
-      session,
-    });
+    console.log('Session found for shop:', cleanShop);
+    console.log('Creating variant for product:', product_id);
     
-    // Prepare variant data
+    // Create variant data
     const variantData = {
       variant: {
         option1: `${dimensions.width_in}" ${dimensions.width_frac}/16 x ${dimensions.height_in}" ${dimensions.height_frac}/16`,
@@ -51,24 +49,42 @@ module.exports = async (req, res) => {
       }
     };
     
-    console.log('Creating variant with data:', JSON.stringify(variantData));
+    console.log('Variant data:', JSON.stringify(variantData));
     
-    // Call the Admin API to create the variant
-    const response = await client.post({
-      path: `products/${product_id}/variants`,
-      data: variantData,
-    });
-    
-    const newVariant = response.body.variant;
-    
-    if (!newVariant) {
-      throw new Error('Variant creation failed');
+    try {
+      // Use direct REST request to create variant
+      // This bypasses the REST resources for more control
+      console.log('Making REST request to Shopify API...');
+      const response = await shopify.rest.request({
+        method: "POST",
+        path: `products/${product_id}/variants`,
+        data: variantData,
+        session
+      });
+      
+      if (response.body && response.body.variant) {
+        console.log('Variant created successfully:', response.body.variant.id);
+        return res.status(200).json({ custom_variant_id: response.body.variant.id });
+      } else {
+        console.error('Unexpected response structure:', JSON.stringify(response, null, 2));
+        return res.status(500).json({ error: 'Unexpected response structure from Shopify API' });
+      }
+    } catch (error) {
+      console.error('Shopify API Error:', error.message);
+      console.error('Error details:', error);
+      
+      // Check if there's GraphQL error details
+      if (error.response && error.response.body) {
+        console.error('Response body:', JSON.stringify(error.response.body, null, 2));
+      }
+      
+      return res.status(500).json({ 
+        error: `Shopify API Error: ${error.message}`,
+        details: error.response ? JSON.stringify(error.response.body) : 'No response details'
+      });
     }
-    
-    console.log('Variant created successfully:', newVariant.id);
-    return res.status(200).json({ custom_variant_id: newVariant.id });
   } catch (error) {
-    console.error('Error creating custom variant:', error);
+    console.error('Error creating custom variant:', error.message);
     return res.status(500).json({ error: error.message });
   }
 }; 

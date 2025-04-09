@@ -12,12 +12,15 @@ const shopify = shopifyApi({
   hostName: process.env.HOST.replace(/^https?:\/\//, ''),
   apiVersion: ApiVersion.July23, // Using July 2023 API version
   isEmbeddedApp: false, // For custom checkout apps, this should be false
-  restResources,
   customAdapterOptions: {},
   billing: undefined,
   userAgentPrefix: 'custom-checkout-app',
-  logger: { level: 0 },
+  logger: { level: 3 }, // Increase logging level for debugging: 0=disabled, 1=errors, 2=warnings, 3=debug
   adapter: shopifyApiNodeAdapter,
+  // Include REST resources
+  rest: {
+    resources: restResources
+  }
 });
 
 // In-memory session storage
