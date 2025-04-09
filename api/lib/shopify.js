@@ -1,5 +1,5 @@
 // api/lib/shopify.js
-const { shopifyApi, ApiVersion, Session } = require('@shopify/shopify-api');
+const { shopifyApi, ApiVersion, Session, DataType } = require('@shopify/shopify-api');
 const { restResources } = require('@shopify/shopify-api/rest/admin/2023-07');
 const { shopifyApiNodeAdapter } = require('@shopify/shopify-api/adapters/node');
 require('dotenv').config();
@@ -22,6 +22,12 @@ const shopify = shopifyApi({
     resources: restResources
   }
 });
+
+// Make the DataType available on the shopify.clients.Rest object
+// This is important for making proper API calls
+shopify.clients = shopify.clients || {};
+shopify.clients.Rest = shopify.clients.Rest || {};
+shopify.clients.Rest.DataType = DataType;
 
 // In-memory session storage
 const SESSIONS = {};
