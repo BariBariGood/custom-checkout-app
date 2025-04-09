@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    { "src": "/", "dest": "/api/index.js" },
+    { "src": "/auth", "dest": "/api/auth.js" },
+    { "src": "/auth/callback", "dest": "/api/auth-callback.js" },
+    { "src": "/create-custom-variant", "dest": "/api/create-custom-variant.js" },
+    { "src": "/test", "dest": "/api/test.js" },
+    { "src": "/shop", "dest": "/api/index.js" },
+    { "src": "/(.*)", "dest": "/api/index.js" }
+  ]
+} 

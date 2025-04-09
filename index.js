@@ -1,3 +1,17 @@
+// This file exists for backward compatibility but is not used in Vercel deployment
+// The actual serverless functions are in the /api directory
+
+console.log('This app is designed for Vercel serverless deployment.');
+console.log('Please deploy this app to Vercel using `vercel` command.');
+console.log('For local development, use `vercel dev`');
+
+// If someone tries to run this file directly, let them know how to properly use it
+if (require.main === module) {
+  console.log('\nIf you want to run this app locally with Express:');
+  console.log('1. Install vercel CLI: npm i -g vercel');
+  console.log('2. Run locally: vercel dev');
+}
+
 // index.js
 const express = require('express');
 const bodyParser = require('body-parser');
