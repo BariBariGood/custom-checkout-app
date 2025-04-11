@@ -11,7 +11,7 @@ A serverless application that enables custom product variants based on dimension
 - 🔒 Secure Shopify API integration
 
 ## Table of Contents
-
+  
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
